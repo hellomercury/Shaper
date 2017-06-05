@@ -5,14 +5,27 @@ using UnityEngine;
 public class BoxLauncher : MonoBehaviour {
 
     public GameObject[] boxPrefabs;
+    public float fireDelay = 3f;
+    public float nextFire = 1f;
+
+    public float fireVelocity = 10f;
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private void FixedUpdate() {
+        nextFire -= Time.deltaTime;
+
+        if(nextFire <= 0) {
+
+            nextFire = fireDelay;
+
+            GameObject boxGO = (GameObject)Instantiate(
+                boxPrefabs[Random.Range(0, boxPrefabs.Length)], 
+                transform.position, 
+                transform.rotation);
+            boxGO.GetComponent<Rigidbody2D>().velocity = transform.rotation * new Vector2(0, fireVelocity);
+
+        }
+
+
+    }
 }

@@ -3,8 +3,10 @@ using System.Collections;
 
 public class MouseManager : MonoBehaviour {
 
+
+
     public LineRenderer dragLine;
-    float dragSpeed = 4f;
+   // float dragSpeed = 4f;
     Rigidbody2D grabbedObject = null;
     SpringJoint2D springJoint = null;
 
@@ -27,8 +29,8 @@ public class MouseManager : MonoBehaviour {
                     springJoint.anchor = localhitPoint;
                     springJoint.connectedAnchor = mouseWorldPos3D;
                     springJoint.distance = 0.1f;
-                    springJoint.dampingRatio = 0.25f;
-                    springJoint.frequency = 0.5f;
+                    springJoint.dampingRatio = 1;
+                    springJoint.frequency = 5;
                     springJoint.autoConfigureDistance = false;
                     springJoint.enableCollision = true;
 
