@@ -12,11 +12,11 @@ public class BoxLauncher : MonoBehaviour {
 
     // Use this for initialization
     private void FixedUpdate() {
-/*
+
         if (GameObject.FindObjectOfType<DeathTrigger>().hasLost) {
             return;
         }
-        */
+        
         nextFire -= Time.deltaTime;
 
         if(nextFire <= 0) {
@@ -31,7 +31,7 @@ public class BoxLauncher : MonoBehaviour {
 
             boxGO.GetComponent<Rigidbody2D>().velocity = transform.rotation * new Vector2(0, fireVelocity);
 
-            //GameObject.FindObjectOfType<ScoreManager>().score++;
+            GameObject.FindObjectOfType<ScoreManager>().score++;
         }
     }
 }
