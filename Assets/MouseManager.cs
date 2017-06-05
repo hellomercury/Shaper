@@ -3,10 +3,10 @@ using System.Collections;
 
 public class MouseManager : MonoBehaviour {
 
-
+    public bool useSpring = false;
 
     public LineRenderer dragLine;
-   // float dragSpeed = 4f;
+   float velocityRatio = 4f;
     Rigidbody2D grabbedObject = null;
     SpringJoint2D springJoint = null;
 
@@ -23,18 +23,23 @@ public class MouseManager : MonoBehaviour {
                 if (hitTest.collider.GetComponent<Rigidbody2D>() != null) {
                     grabbedObject = hitTest.collider.GetComponent<Rigidbody2D>();
 
-                    springJoint = grabbedObject.gameObject.AddComponent<SpringJoint2D>();
-                    //set anchor at object part
-                    Vector3 localhitPoint = grabbedObject.transform.InverseTransformPoint(hitTest.point);
-                    springJoint.anchor = localhitPoint;
-                    springJoint.connectedAnchor = mouseWorldPos3D;
-                    springJoint.distance = 0.1f;
-                    springJoint.dampingRatio = 1;
-                    springJoint.frequency = 5;
-                    springJoint.autoConfigureDistance = false;
-                    springJoint.enableCollision = true;
+                    if(useSpring) {
+                        springJoint = grabbedObject.gameObject.AddComponent<SpringJoint2D>();
+                        //set anchor at object part
+                        Vector3 localhitPoint = grabbedObject.transform.InverseTransformPoint(hitTest.point);
+                        springJoint.anchor = localhitPoint;
+                        springJoint.connectedAnchor = mouseWorldPos3D;
+                        springJoint.distance = 0.1f;
+                        springJoint.dampingRatio = 1;
+                        springJoint.frequency = 5;
+                        springJoint.autoConfigureDistance = false;
+                        springJoint.enableCollision = true;
+                        springJoint.connectedBody = null;
+                    } else {
+                        //velocity instead spring
+                        grabbedObject.gravityScale = 0;
+                    }
 
-                    //springJoint.connectedBody = null;
                 
                     dragLine.enabled = true;
                 }
@@ -42,39 +47,51 @@ public class MouseManager : MonoBehaviour {
         }
         //if grabbed something
         if (Input.GetMouseButtonUp(0) && grabbedObject != null) {
-            Destroy(springJoint);
-            springJoint = null;
+            if(useSpring) {
+                Destroy(springJoint);
+                springJoint = null;
+            } else {
+                grabbedObject.gravityScale = 1;
+            }
+            
             grabbedObject = null;
             dragLine.enabled = false;
         }
-        if(springJoint!= null) {
-            Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            springJoint.connectedAnchor = mouseWorldPos3D;
-        }
     }
-    /*
+
     void FixedUpdate() {
         if (grabbedObject != null) {
             //moves object with mouse
-            Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mouseWorldPos2D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (useSpring) {
+                springJoint.connectedAnchor = mouseWorldPos2D;
+            } else {
+                grabbedObject.velocity = (mouseWorldPos2D - grabbedObject.position) * velocityRatio;
+            }
+            /*
             Vector2 mousePos2D = new Vector2(mouseWorldPos3D.x, mouseWorldPos3D.y);
 
             Vector2 dir = mousePos2D - grabbedObject.position;
 
-            dir *= dragSpeed;
+            dir *= velocityRatio;
             
             grabbedObject.velocity = dir;
+            */
 
-
-
+          
         }
-    }*/
+    }
     void LateUpdate() {
         if (grabbedObject != null) {
-            Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 mousePos2D = new Vector2(mouseWorldPos3D.x, mouseWorldPos3D.y);
-            dragLine.SetPosition(0, new Vector3(grabbedObject.position.x, grabbedObject.position.y, -1));
-            dragLine.SetPosition(1, new Vector3(mousePos2D.x, mousePos2D.y, 0));
+            if (useSpring) {
+                Vector3 worldAnchor = grabbedObject.transform.TransformPoint(springJoint.anchor);
+                dragLine.SetPosition(0, new Vector3(worldAnchor.x, worldAnchor.y, -1));
+                dragLine.SetPosition(1, new Vector3(springJoint.connectedAnchor.x, springJoint.connectedAnchor.y, -1));
+            } else {
+                Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                dragLine.SetPosition(0, new Vector3(grabbedObject.position.x, grabbedObject.position.y, -1));
+                dragLine.SetPosition(1, new Vector3(mouseWorldPos3D.x, mouseWorldPos3D.y, -1));
+            }
         }
     }
 }

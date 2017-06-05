@@ -12,6 +12,11 @@ public class BoxLauncher : MonoBehaviour {
 
     // Use this for initialization
     private void FixedUpdate() {
+/*
+        if (GameObject.FindObjectOfType<DeathTrigger>().hasLost) {
+            return;
+        }
+        */
         nextFire -= Time.deltaTime;
 
         if(nextFire <= 0) {
@@ -19,13 +24,14 @@ public class BoxLauncher : MonoBehaviour {
             nextFire = fireDelay;
 
             GameObject boxGO = (GameObject)Instantiate(
-                boxPrefabs[Random.Range(0, boxPrefabs.Length)], 
-                transform.position, 
-                transform.rotation);
+                        boxPrefabs[Random.Range(0, boxPrefabs.Length)],
+                        transform.position,
+                        transform.rotation
+                        );
+
             boxGO.GetComponent<Rigidbody2D>().velocity = transform.rotation * new Vector2(0, fireVelocity);
 
+            //GameObject.FindObjectOfType<ScoreManager>().score++;
         }
-
-
     }
 }
