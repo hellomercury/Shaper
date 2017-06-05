@@ -6,6 +6,7 @@ public class MouseManager : MonoBehaviour {
     public LineRenderer dragLine;
     float dragSpeed = 4f;
     Rigidbody2D grabbedObject = null;
+    SpringJoint2D springJoint = null;
 
     void Update() {
         if (Input.GetMouseButtonDown(0)) {
@@ -15,23 +16,41 @@ public class MouseManager : MonoBehaviour {
             Vector2 dir = Vector2.zero;
 
             RaycastHit2D hitTest = Physics2D.Raycast(mousePos2D, dir);
-            if (hitTest != null && hitTest.collider != null) {
+            if (hitTest && hitTest.collider != null) {
                 //clicked on something with collider
                 if (hitTest.collider.GetComponent<Rigidbody2D>() != null) {
                     grabbedObject = hitTest.collider.GetComponent<Rigidbody2D>();
-                    grabbedObject.gravityScale = 0;
+
+                    springJoint = grabbedObject.gameObject.AddComponent<SpringJoint2D>();
+                    //set anchor at object part
+                    Vector3 localhitPoint = grabbedObject.transform.InverseTransformPoint(hitTest.point);
+                    springJoint.anchor = localhitPoint;
+                    springJoint.connectedAnchor = mouseWorldPos3D;
+                    springJoint.distance = 0.1f;
+                    springJoint.dampingRatio = 0.25f;
+                    springJoint.frequency = 0.5f;
+                    springJoint.autoConfigureDistance = false;
+                    springJoint.enableCollision = true;
+
+                    //springJoint.connectedBody = null;
+                
                     dragLine.enabled = true;
                 }
             }
         }
         //if grabbed something
         if (Input.GetMouseButtonUp(0) && grabbedObject != null) {
-            grabbedObject.gravityScale = 1;
+            Destroy(springJoint);
+            springJoint = null;
             grabbedObject = null;
             dragLine.enabled = false;
         }
+        if(springJoint!= null) {
+            Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            springJoint.connectedAnchor = mouseWorldPos3D;
+        }
     }
-
+    /*
     void FixedUpdate() {
         if (grabbedObject != null) {
             //moves object with mouse
@@ -47,7 +66,7 @@ public class MouseManager : MonoBehaviour {
 
 
         }
-    }
+    }*/
     void LateUpdate() {
         if (grabbedObject != null) {
             Vector3 mouseWorldPos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
