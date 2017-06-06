@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour {
     public int score = 0;
+    private GUIStyle guiStyle = new GUIStyle();
 
     void OnGUI() {
         GUI.color = Color.black;
-        GUI.Label(new Rect(0, 0, 100, 50), "Score: " + score);
+        guiStyle.fontSize = 30;
+        GUI.Label(new Rect(0, 0, 100, 50), "Score: " + score, guiStyle);
     }
 
 }
