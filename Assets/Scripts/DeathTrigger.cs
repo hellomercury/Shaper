@@ -15,10 +15,10 @@ public class DeathTrigger: MonoBehaviour {
     void OnGUI() {
         if (hasLost) {
             GUI.color = Color.black;
-            guiStyle.fontSize = 30;
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 100, 50), "GAME OVER!", guiStyle);
+            guiStyle.fontSize = 50;
+            GUI.Label(new Rect(Screen.width / 2 - 120, Screen.height / 2 - 25, 100, 50), "GAME OVER!", guiStyle);
 
-            if (GUI.Button(new Rect(Screen.width / 2 - 60, Screen.height / 2 + 30, 100, 50), "Restart!", guiStyle)) {
+            if (GUI.Button(new Rect(Screen.width / 2 - 70, Screen.height / 2 + 30, 100, 50), "Restart!", guiStyle)) {
                 Application.LoadLevel(Application.loadedLevel);
             }
             if (GUI.Button(new Rect(Screen.width / 2 - 45, Screen.height / 2 + 85, 100, 50), "Quit!", guiStyle))

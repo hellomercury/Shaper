@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour {
 
     void OnGUI() {
         GUI.color = Color.black;
-        guiStyle.fontSize = 30;
+        guiStyle.fontSize = 50;
         GUI.Label(new Rect(0, 0, 100, 50), "Score: " + score, guiStyle);
     }
 
