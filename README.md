@@ -9,7 +9,7 @@ The game is cross-platform and currently available on Web and on Googple Play St
 
 [Web version hosted on Github pages](https://aleksefo.github.io/shaper/sh.html)
 
-Android version on Google Play is being published right now. Stay tuned.
+[Android version on Google Play](https://play.google.com/store/apps/details?id=com.Segd.Shaper)
 
 # Video Preview
 
